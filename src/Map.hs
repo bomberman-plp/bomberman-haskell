@@ -1,4 +1,4 @@
-module Game.Map 
+module Map 
     ( Tile(..)
     , Coord
     , GameMap
