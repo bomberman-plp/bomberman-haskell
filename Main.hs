@@ -29,4 +29,4 @@ main = do
     drawInMap (0, 7) ' '
     putStr "Use W, A, S, D + Enter para andar. 'q' + Enter para sair.\nInput: "
 
-    core initialPosition estadoInicial
+    core initialPosition estadoInicial Nothing
