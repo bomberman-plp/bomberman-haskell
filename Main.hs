@@ -1,4 +1,5 @@
 module Main where
+import GHC.IO.Encoding(setLocaleEncoding, utf8)
 
 import Map
 import Util.DrawMap
@@ -9,6 +10,7 @@ import System.IO
 
 main :: IO ()
 main = do
+    setLocaleEncoding utf8
     hSetBuffering stdout NoBuffering
     hSetBuffering stdin LineBuffering
     hSetEcho stdin True
@@ -28,5 +30,4 @@ main = do
 
     drawInMap (0, 7) ' '
     putStr "Use W, A, S, D + Enter para andar. 'q' + Enter para sair.\nInput: "
-
     core initialPosition estadoInicial Nothing
