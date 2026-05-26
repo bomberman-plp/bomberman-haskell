@@ -50,6 +50,8 @@ core playerPos current_map bomb = do
         if destinationTile == Empty --verifica se esta vazia (colisão)
         then do
 
+            {-Gera um novo mapa atualizando a posição do player no mapa-}
+
             let oldMap = M.insert playerPos Empty current_map
             let newMap = M.insert newPos Player oldMap
 
