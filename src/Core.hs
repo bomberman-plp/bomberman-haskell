@@ -17,10 +17,6 @@ import qualified Data.Map as M
 core :: Coord -> GameMap -> Maybe Bomb -> IO ()
 core playerPos current_map bomb = do
 
-    -- >>> APENAS ESTA LINHA FOI ADICIONADA AQUI NO INÍCIO PARA O SEU TESTE <<<
-    putStrLn $ "\n[TESTE] Conteúdo da posição ATUAL do player na MATRIZ: " ++ show (getTile playerPos current_map)
-    putStrLn $ "\n[TESTE] Conteúdo da posição (1,2) na MATRIZ: " ++ show (getTile (1,2) current_map)
-
     command <- getLine --recebe a entrada e na sequencia faz a lógica do que fazer
 
     let ((bomb_x, bomb_y), bombTimer) = case bomb of
@@ -53,12 +49,13 @@ core playerPos current_map bomb = do
 
         if destinationTile == Empty --verifica se esta vazia (colisão)
         then do
+
             let oldMap = M.insert playerPos Empty current_map
             let newMap = M.insert newPos Player oldMap
 
             drawInMap playerPos ' ' -- aqui ele "apaga o player"
             drawInMap newPos '☻' -- redesenha o player em outro lugar
-            handleBomb newPos current_map (Just (Bomb (bomb_x, bomb_y) bombTimer)) -- atualiza a bomba
+            handleBomb newPos newMap (Just (Bomb (bomb_x, bomb_y) bombTimer)) -- atualiza a bomba
 
             drawInMap (0,7) ' ' --isso aqui é uma gambiarra para forçar o cursor pra baixo. sem isso aqui, o cursor ficava no mapa e estragava tudo
             putStr "Use W, A, S, D + Enter para andar. 'q' + Enter para sair.\nInput: "
@@ -66,7 +63,7 @@ core playerPos current_map bomb = do
             core newPos newMap (Just (Bomb (bomb_x, bomb_y) bombTimer)) --roda o core novamente com a nova posicao (como se fosse um while)
 
         else do -- se colidir, só roda o core novamente na mesma posicao
-            handleBomb playerPos current_map (Just (Bomb (bomb_x, bomb_y) bombTimer)) -- atualiza a bomba 
+            handleBomb (bomb_x, bomb_y) current_map (Just (Bomb (bomb_x, bomb_y) bombTimer)) -- atualiza a bomba 
             drawInMap (0, 7) ' '
             putStr "Colisão detectada! Use W, A, S, D + Enter.\nInput: "
             core playerPos current_map (Just (Bomb (bomb_x, bomb_y) bombTimer))
