@@ -5,6 +5,8 @@ import Util.DrawInMap
 
 data Bomb = Bomb { position :: Coord, timer :: Int }
 
+{--}
+
 handleBomb :: Coord -> GameMap -> Maybe Bomb -> IO ()
 handleBomb playerPos current_map (Just (Bomb (bomb_x, bomb_y) bombTimer)) = do
     if bombTimer > 0 then
@@ -34,3 +36,4 @@ explodeBomb (x, y) gameMap = do
         drawInMap (x + 1, y) '✶'
     else
         return ()
+    
