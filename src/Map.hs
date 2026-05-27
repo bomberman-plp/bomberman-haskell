@@ -25,6 +25,12 @@ assetToMap '1' = Empty
 assetToMap '2' = Empty        
 assetToMap _   = Empty
 
+{-
+    Descrição: Varre a matriz de caracteres do arquivo de mapa para encontrar 
+    a posição inicial do Player 1 (representado pelo caractere '1').
+    Retorna uma tupla (X, Y) com as coordenadas encontradas ou (1,1) como padrão.
+-}
+
 startPos_player :: [[Char]] -> (Int, Int)
 startPos_player rows = percorrerMatriz rows 0 0
     where

@@ -60,7 +60,14 @@ core playerPos current_map bomb = do
             handleBomb newPos newMap (Just (Bomb (bomb_x, bomb_y) bombTimer)) -- atualiza a bomba
 
             drawInMap (0,7) ' ' --isso aqui é uma gambiarra para forçar o cursor pra baixo. sem isso aqui, o cursor ficava no mapa e estragava tudo
+
             putStr "Use W, A, S, D + Enter para andar. 'q' + Enter para sair.\nInput: "
+
+            {- LINHA DE TESTE PARA VERIFICAR SE TEM UM PLAYER EM UMA POSIÇÃO NA MATRIZ
+            -- Buscamos na MATRIZ NOVA o que tem na nova posição:
+            let tileNaMatriz = getTile newPos newMap
+            putStr $ "Matriz na pos " ++ show newPos ++ " eh: " ++ show tileNaMatriz ++ "\nInput: "
+            -}
 
             core newPos newMap (Just (Bomb (bomb_x, bomb_y) bombTimer)) --roda o core novamente com a nova posicao (como se fosse um while)
 
