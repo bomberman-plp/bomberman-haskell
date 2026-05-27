@@ -7,6 +7,7 @@ import System.IO
 import Util.Bomb
 
 import qualified Data.Map as M
+import Control.Concurrent 
 
 {-
     Autor: João Targino
@@ -46,8 +47,19 @@ core playerPos current_map bomb = do
                     _ -> playerPos -- ingora se teclar outra coisa
 
         let destinationTile = getTile newPos current_map -- calcula a tile de destino
+        -------------------------------------------------------------------------
+        -- INTERCEPTAÇÃO: SCRIPT DE VITÓRIA
+        -------------------------------------------------------------------------
+        if destinationTile == Victory 
+        then do
+            cleanTerminal --Limpa o mapa de tela                    
+            telaVitoria <- readFile "assets/vitoria.txt"  --carrega o troféu 
+            putStrLn telaVitoria  --imprima na tela                 
+            Control.Concurrent.threadDelay 5000000  --Tempo de 5 segundos 
+            cleanTerminal
+            return()
 
-        if destinationTile == Empty --verifica se esta vazia (colisão)
+        else if destinationTile == Empty --verifica se esta vazia (colisão)
         then do
 
             {-Gera um novo mapa atualizando a posição do player no mapa-}
