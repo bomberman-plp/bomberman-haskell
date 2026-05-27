@@ -1,6 +1,8 @@
 module Main where
 import GHC.IO.Encoding(setLocaleEncoding, utf8)
 
+import qualified Data.Map as M
+
 import Map
 import Util.DrawMap
 import Util.DrawInMap
@@ -19,12 +21,14 @@ main = do
     cleanTerminal
 
     putStrLn "Carregando a arena de Bomberman..."
-    estadoInicial <- loadStaticMap "assets/level1.txt"
+    (mapaEstatico, initialPosition) <- loadStaticMap "assets/level1.txt"
+
+    let estadoInicial = M.insert initialPosition Player mapaEstatico
 
     cleanTerminal
     drawMap estadoInicial
 
-    let initialPosition = (1,1) -- assumindo que sempre começa em 1,1
+    --let initialPosition = (1,1) -- assumindo que sempre começa em 1,1
 
     drawInMap initialPosition '☻'
 
