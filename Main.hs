@@ -30,8 +30,8 @@ main = do
 
     --let initialPosition = (1,1) -- assumindo que sempre começa em 1,1
 
-    drawInMap initialPosition '☻'
+    _ <- drawInMap initialPosition '☻' Player estadoInicial
 
-    drawInMap (0, 7) ' '
+    _ <- drawInMap (0, 7) ' ' Empty estadoInicial
     putStr "Use W, A, S, D + Enter para andar. 'q' + Enter para sair.\nInput: "
     core initialPosition estadoInicial Nothing

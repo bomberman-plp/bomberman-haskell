@@ -30,12 +30,13 @@ core playerPos current_map bomb = do
     then do
         let ((bomb_x, bomb_y), bombTimer) = (playerPos, 3) -- a bomba tem um timer de 3 turnos, então ela explode depois de 3 comandos do jogador
 
-        handleBomb playerPos current_map (Just (Bomb (bomb_x, bomb_y) bombTimer)) -- desenha a bomba no mapa
+        newMapBomb <- handleBomb playerPos current_map (Just (Bomb (bomb_x, bomb_y) bombTimer)) -- desenha a bomba no mapa
 
-        drawInMap (0,7) ' ' --isso aqui é uma gambiarra para forçar o cursor pra baixo. sem isso aqui, o cursor ficava no mapa e estragava tudo
+        _ <- drawInMap (0,7) ' ' Empty newMapBomb --isso aqui é uma gambiarra para forçar o cursor pra baixo. sem isso aqui, o cursor ficava no mapa e estragava tudo
+
         putStr "Use W, A, S, D + Enter para andar. 'q' + Enter para sair.\nInput: "
 
-        core playerPos current_map (Just (Bomb (bomb_x, bomb_y) bombTimer)) --roda o core novamente com a nova posicao (como se fosse um while)
+        core playerPos newMapBomb (Just (Bomb (bomb_x, bomb_y) bombTimer)) --roda o core novamente com a nova posicao (como se fosse um while)
     else do
         let (x,y) = playerPos
         let newPos = case command of
@@ -55,11 +56,12 @@ core playerPos current_map bomb = do
             let oldMap = M.insert playerPos Empty current_map
             let newMap = M.insert newPos Player oldMap
 
-            drawInMap playerPos ' ' -- aqui ele "apaga o player"
-            drawInMap newPos '☻' -- redesenha o player em outro lugar
-            handleBomb newPos newMap (Just (Bomb (bomb_x, bomb_y) bombTimer)) -- atualiza a bomba
+            _ <- drawInMap playerPos ' ' Empty newMap -- aqui ele "apaga o player"
+            _ <- drawInMap newPos '☻' Player newMap -- redesenha o player em outro lugar
 
-            drawInMap (0,7) ' ' --isso aqui é uma gambiarra para forçar o cursor pra baixo. sem isso aqui, o cursor ficava no mapa e estragava tudo
+            newMapBomb <- handleBomb newPos newMap (Just (Bomb (bomb_x, bomb_y) bombTimer))
+
+            _ <- drawInMap (0,7) ' ' Empty newMapBomb --isso aqui é uma gambiarra para forçar o cursor pra baixo. sem isso aqui, o cursor ficava no mapa e estragava tudo
 
             putStr "Use W, A, S, D + Enter para andar. 'q' + Enter para sair.\nInput: "
 
@@ -69,11 +71,13 @@ core playerPos current_map bomb = do
             putStr $ "Matriz na pos " ++ show newPos ++ " eh: " ++ show tileNaMatriz ++ "\nInput: "
             -}
 
-            core newPos newMap (Just (Bomb (bomb_x, bomb_y) bombTimer)) --roda o core novamente com a nova posicao (como se fosse um while)
+            core newPos newMapBomb (Just (Bomb (bomb_x, bomb_y) bombTimer)) --roda o core novamente com a nova posicao (como se fosse um while)
 
         else do -- se colidir, só roda o core novamente na mesma posicao
-            handleBomb (bomb_x, bomb_y) current_map (Just (Bomb (bomb_x, bomb_y) bombTimer)) -- atualiza a bomba 
-            drawInMap (0, 7) ' '
+            newMapBomb <- handleBomb (bomb_x, bomb_y) current_map (Just (Bomb (bomb_x, bomb_y) bombTimer)) -- atualiza a bomba 
+
+            _ <- drawInMap (0, 7) ' ' Empty newMapBomb
+
             putStr "Colisão detectada! Use W, A, S, D + Enter.\nInput: "
-            core playerPos current_map (Just (Bomb (bomb_x, bomb_y) bombTimer))
+            core playerPos newMapBomb (Just (Bomb (bomb_x, bomb_y) bombTimer))
 
