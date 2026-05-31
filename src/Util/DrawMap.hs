@@ -16,7 +16,7 @@ tupleToChar :: Tile -> Char
 tupleToChar Indestructible = '█'
 tupleToChar Destructible = '░'
 tupleToChar Player = '☻'
-tupleToChar Victory = ' '
+tupleToChar Victory = '🏁'
 tupleToChar Empty = ' '
 
 
