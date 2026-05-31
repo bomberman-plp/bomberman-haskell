@@ -15,7 +15,9 @@ import Map
 tupleToChar :: Tile -> Char
 tupleToChar Indestructible = '█'
 tupleToChar Destructible = '░'
+tupleToChar Player = '☻'
 tupleToChar Empty = ' '
+
 
 -- essa função verifica as coordenadas do mapa para saber a proporção de desenho na tela, e na sequencia faz o desenho
 drawMap :: GameMap -> IO ()
