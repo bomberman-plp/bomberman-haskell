@@ -3,7 +3,7 @@ module Util.DrawMap
     ) where
             
 import qualified Data.Map as M
-import Map
+import Map (Tile(..), GameMap, getTile)
 
 {-
     Autor: João Targino
