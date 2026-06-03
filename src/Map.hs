@@ -10,7 +10,7 @@ import qualified Data.Map as M
 import System.IO
 
 -- Elementos que compõem a estrutura fixa e física do mapa
-data Tile = Indestructible | Destructible | Empty | Player
+data Tile = Indestructible | Destructible | Empty | Player | Bomb | Explosion
   deriving (Eq, Show)
 
 type Coord = (Int, Int)
