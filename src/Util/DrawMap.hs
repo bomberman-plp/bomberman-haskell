@@ -3,7 +3,7 @@ module Util.DrawMap
     ) where
             
 import qualified Data.Map as M
-import Map
+import Map (Tile(..), GameMap, getTile)
 
 {-
     Autor: João Targino
@@ -16,6 +16,7 @@ tupleToChar :: Tile -> Char
 tupleToChar Indestructible = '█'
 tupleToChar Destructible = '░'
 tupleToChar Player = '☻'
+tupleToChar Victory = '🏁'
 tupleToChar Empty = ' '
 tupleToChar Bomb = '●'
 tupleToChar Explosion = '✶'
