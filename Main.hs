@@ -39,4 +39,4 @@ main = do
 
     _ <- drawInMap (0, 7) ' ' Empty estadoInicial
     putStr "Use W, A, S, D + Enter para andar. 'q' + Enter para sair.\nInput: "
-    core initialPosition estadoInicial Nothing
+    core 1 initialPosition estadoInicial Nothing
