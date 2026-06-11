@@ -7,7 +7,8 @@ import System.IO
 import Util.Bomb
 
 import qualified Data.Map as M
-import Control.Concurrent 
+import Control.Concurrent
+import Util.Elimination
 
 {-
     Autor: João Targino
@@ -83,12 +84,16 @@ core playerPos current_map bomb = do
             putStr $ "Matriz na pos " ++ show newPos ++ " eh: " ++ show tileNaMatriz ++ "\nInput: "
             -}
 
+            checkElimination newPos (bomb_x, bomb_y) bombTimer
+
             core newPos newMapBomb (Just (BombData (bomb_x, bomb_y) bombTimer)) --roda o core novamente com a nova posicao (como se fosse um while)
 
         else do -- se colidir, só roda o core novamente na mesma posicao
             newMapBomb <- handleBomb (bomb_x, bomb_y) current_map (Just (BombData (bomb_x, bomb_y) bombTimer)) -- atualiza a bomba
 
             _ <- drawInMap (0, 7) ' ' Empty newMapBomb
+
+            checkElimination playerPos (bomb_x, bomb_y) bombTimer
 
             putStr "Colisão detectada! Use W, A, S, D + Enter.\nInput: "
             core playerPos newMapBomb (Just (BombData (bomb_x, bomb_y) bombTimer))
