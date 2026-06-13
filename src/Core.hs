@@ -38,7 +38,7 @@ core  faseAtual playerPos current_map bomb = do
 
         newMapBomb <- handleBomb playerPos current_map (Just (BombData (bomb_x, bomb_y) bombTimer)) -- desenha a bomba no mapa
 
-        _ <- drawInMap (0,7) ' ' Empty newMapBomb --isso aqui é uma gambiarra para forçar o cursor pra baixo. sem isso aqui, o cursor ficava no mapa e estragava tudo
+        _ <- drawInMap (0,11) ' ' Empty newMapBomb --isso aqui é uma gambiarra para forçar o cursor pra baixo. sem isso aqui, o cursor ficava no mapa e estragava tudo
 
         putStr "Use W, A, S, D + Enter para andar. 'q' + Enter para sair.\nInput: "
 
@@ -89,7 +89,7 @@ core  faseAtual playerPos current_map bomb = do
 
             newMapBomb <- handleBomb newPos newMap (Just (BombData (bomb_x, bomb_y) bombTimer))
 
-            _ <- drawInMap (0,7) ' ' Empty newMapBomb --isso aqui é uma gambiarra para forçar o cursor pra baixo. sem isso aqui, o cursor ficava no mapa e estragava tudo
+            _ <- drawInMap (0,11) ' ' Empty newMapBomb --isso aqui é uma gambiarra para forçar o cursor pra baixo. sem isso aqui, o cursor ficava no mapa e estragava tudo
 
             putStr "Use W, A, S, D + Enter para andar. 'q' + Enter para sair.\nInput: "
 
@@ -104,7 +104,7 @@ core  faseAtual playerPos current_map bomb = do
         else do -- se colidir, só roda o core novamente na mesma posicao
             newMapBomb <- handleBomb (bomb_x, bomb_y) current_map (Just (BombData (bomb_x, bomb_y) bombTimer)) -- atualiza a bomba
 
-            _ <- drawInMap (0, 7) ' ' Empty newMapBomb
+            _ <- drawInMap (0, 11) ' ' Empty newMapBomb
 
             putStr "Colisão detectada! Use W, A, S, D + Enter.\nInput: "
             core faseAtual playerPos newMapBomb (Just (BombData (bomb_x, bomb_y) bombTimer))

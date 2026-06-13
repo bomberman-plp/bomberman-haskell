@@ -37,6 +37,6 @@ main = do
 
     _ <- drawInMap initialPosition '☻' Player estadoInicial
 
-    _ <- drawInMap (0, 7) ' ' Empty estadoInicial
+    _ <- drawInMap (0, 11) ' ' Empty estadoInicial
     putStr "Use W, A, S, D + Enter para andar. 'q' + Enter para sair.\nInput: "
     core 1 initialPosition estadoInicial Nothing
