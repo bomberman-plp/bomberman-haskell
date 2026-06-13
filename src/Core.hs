@@ -9,10 +9,6 @@ import Util.DrawMap (drawMap)
 
 import qualified Data.Map as M
 import Control.Concurrent 
---import qualified Data.List as L
-import Util.CleanTerminal (cleanTerminal)
-import Prelude 
-import Data.Maybe (Maybe(Nothing))
 
 {-
     Autor: João Targino
@@ -99,12 +95,14 @@ core  faseAtual playerPos current_map bomb = do
             putStr $ "Matriz na pos " ++ show newPos ++ " eh: " ++ show tileNaMatriz ++ "\nInput: "
             -}
 
+            checkElimination newPos (bomb_x, bomb_y) bombTimer
+
             core faseAtual newPos newMapBomb (Just (BombData (bomb_x, bomb_y) bombTimer)) --roda o core novamente com a nova posicao (como se fosse um while)
 
         else do -- se colidir, só roda o core novamente na mesma posicao
             newMapBomb <- handleBomb (bomb_x, bomb_y) current_map (Just (BombData (bomb_x, bomb_y) bombTimer)) -- atualiza a bomba
 
-            _ <- drawInMap (0, 11) ' ' Empty newMapBomb
+            _ <- drawInMap (0, 7) ' ' Empty newMapBomb
 
             putStr "Colisão detectada! Use W, A, S, D + Enter.\nInput: "
             core faseAtual playerPos newMapBomb (Just (BombData (bomb_x, bomb_y) bombTimer))
