@@ -1,6 +1,7 @@
 module Util.CleanTerminal
-    ( cleanTerminal
-    )where
+    (cleanTerminal, 
+    clearTerminalScrollback
+    ) where
 
 {-
     Autor: João Targino
@@ -11,3 +12,6 @@ module Util.CleanTerminal
 
 cleanTerminal :: IO ()
 cleanTerminal = putStr "\x1b[2J\x1b[H"
+
+clearTerminalScrollback :: IO ()
+clearTerminalScrollback = putStr "\ESC[3J\ESC[2J\ESC[H"

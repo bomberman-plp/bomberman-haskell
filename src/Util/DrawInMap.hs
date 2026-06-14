@@ -16,3 +16,6 @@ drawInMap (x,y) c tile gameMap = do
     putChar c
     let newMap = M.insert (x,y) tile gameMap
     return newMap
+
+
+
