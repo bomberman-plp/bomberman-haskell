@@ -23,7 +23,10 @@ main = do
     putStrLn "Carregando a arena de Bomberman..."
     (mapaEstatico, initialPosition) <- loadStaticMap "assets/level1.txt"
 
-    let estadoInicial = M.insert initialPosition Player mapaEstatico
+    let initialEnemyPosition = (1, 9)
+
+    let mapaComPlayer = M.insert initialPosition Player mapaEstatico
+    let estadoInicial = M.insert initialEnemyPosition Enemy mapaComPlayer
 
     cleanTerminal
     drawMap estadoInicial
@@ -31,7 +34,8 @@ main = do
     --let initialPosition = (1,1) -- assumindo que sempre começa em 1,1
 
     _ <- drawInMap initialPosition '☻' Player estadoInicial
+    _ <- drawInMap initialEnemyPosition 'E' Enemy estadoInicial
 
     _ <- drawInMap (0, 7) ' ' Empty estadoInicial
     putStr "Use W, A, S, D + Enter para andar. 'q' + Enter para sair.\nInput: "
-    core initialPosition estadoInicial Nothing
+    core initialPosition initialEnemyPosition estadoInicial Nothing
