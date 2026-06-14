@@ -1,6 +1,5 @@
 module Main where
 import GHC.IO.Encoding(setLocaleEncoding, utf8)
-import System.Process (callCommand)
 import Control.Concurrent (threadDelay)
 
 import qualified Data.Map as M
@@ -21,7 +20,7 @@ main = do
     hSetEcho stdin True
 
     telaInicial
-    callCommand "clear"
+    cleanTerminal
     putStrLn "Carregando a arena de Bomberman..."
     
     hFlush stdout
@@ -29,14 +28,17 @@ main = do
 
     (mapaEstatico, initialPosition) <- loadStaticMap "assets/level1.txt"
 
-    let estadoInicial = M.insert initialPosition Player mapaEstatico
-    callCommand "clear"
+    let initialEnemyPosition = (1, 9)
+
+    let mapaComPlayer = M.insert initialPosition Player mapaEstatico
+    let estadoInicial = M.insert initialEnemyPosition Enemy mapaComPlayer
+    
+    cleanTerminal
     drawMap estadoInicial
 
-    --let initialPosition = (1,1) -- assumindo que sempre começa em 1,1
-
     _ <- drawInMap initialPosition '☻' Player estadoInicial
+    _ <- drawInMap initialEnemyPosition 'E' Enemy estadoInicial
 
     _ <- drawInMap (0, 11) ' ' Empty estadoInicial
     putStr "Use W, A, S, D + Enter para andar. 'q' + Enter para sair.\nInput: "
-    core 1 initialPosition estadoInicial Nothing
+    core 1 initialPosition initialEnemyPosition estadoInicial Nothing
