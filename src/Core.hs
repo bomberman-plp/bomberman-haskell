@@ -9,7 +9,6 @@ import Util.DrawMap (drawMap)
 
 import qualified Data.Map as M
 import Control.Concurrent 
---import qualified Data.List as L
 import Util.CleanTerminal (cleanTerminal)
 import Prelude 
 import Data.Maybe (Maybe(Nothing))
