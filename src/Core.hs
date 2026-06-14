@@ -8,7 +8,7 @@ import Util.Bomb
 import Util.DrawMap (drawMap)
 
 import qualified Data.Map as M
-import Control.Concurrent 
+import Control.Concurrent                                      
 import Util.Elimination (checkElimination)
 
 {-
@@ -25,6 +25,7 @@ core  faseAtual playerPos current_map bomb = do
     let ((bomb_x, bomb_y), bombTimer) = case bomb of
             Just (BombData pos timer) -> (pos, timer - 1) -- se a bomba existir, decrementa o timer
             Nothing -> ((-1, -1), -1) -- se não existir, coloca um valor inválido
+    _ <- checkElimination playerPos (bomb_x, bomb_y) bombTimer
 
     if command == "q" -- encerra o jogo
     then do
@@ -96,7 +97,7 @@ core  faseAtual playerPos current_map bomb = do
             putStr $ "Matriz na pos " ++ show newPos ++ " eh: " ++ show tileNaMatriz ++ "\nInput: "
             -}
 
-            _ <- checkElimination newPos (bomb_x, bomb_y) bombTimer
+          
 
             core faseAtual newPos newMapBomb (Just (BombData (bomb_x, bomb_y) bombTimer)) --roda o core novamente com a nova posicao (como se fosse um while)
 
