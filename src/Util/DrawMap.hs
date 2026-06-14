@@ -20,6 +20,7 @@ tupleToChar Victory = '🏁'
 tupleToChar Empty = ' '
 tupleToChar Bomb = '●'
 tupleToChar Explosion = '✶'
+tupleToChar Enemy = 'E'
 
 
 -- essa função verifica as coordenadas do mapa para saber a proporção de desenho na tela, e na sequencia faz o desenho
