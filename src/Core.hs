@@ -39,7 +39,10 @@ core faseAtual playerPos enemyPos current_map bomb = do
 
         _ <- drawInMap (0,11) ' ' Empty newMapBomb 
 
-        putStr "Use W, A, S, D + Enter para andar. 'q' + Enter para sair.\nInput: "
+        putStr "\nUse W, A, S, D + Enter para andar.\n" 
+        putStr "Use B para jogar a bomba.\n"
+        putStr "Use q + Enter para sair.\n"
+        putStr "\nInput:"
 
         core faseAtual playerPos enemyPos newMapBomb (Just (BombData (bomb_x, bomb_y) bombTimer)) 
     else do
@@ -74,7 +77,10 @@ core faseAtual playerPos enemyPos current_map bomb = do
                 let estadoNovo = M.insert initialEnemyPosition Enemy mapaComPlayer
                 cleanTerminal
                 drawMap estadoNovo
-                putStr  "Use W, A, S, D + Enter para andar. 'q' + Enter para sair.\nInput: "
+                putStr "\nUse W, A, S, D + Enter para andar.\n" 
+                putStr "Use B para jogar a bomba.\n"
+                putStr "Use q + Enter para sair.\n"
+                putStr "\nInput:"
                 core proximaFase posInicial initialEnemyPosition estadoNovo Nothing
 
         else if destinationTile == Empty 
@@ -96,13 +102,16 @@ core faseAtual playerPos enemyPos current_map bomb = do
             let newMapComInimigo = M.insert finalEnemyPos Enemy mapSemInimigoVelho
             
             _ <- drawInMap enemyPos ' ' Empty newMapComInimigo
-            _ <- drawInMap finalEnemyPos 'E' Enemy newMapComInimigo
+            _ <- drawInMap finalEnemyPos '⚉' Enemy newMapComInimigo
 
             newMapBomb <- handleBomb newPos newMapComInimigo (Just (BombData (bomb_x, bomb_y) bombTimer))
 
             _ <- drawInMap (0,11) ' ' Empty newMapBomb 
 
-            putStr "Use W, A, S, D + Enter para andar. 'q' + Enter para sair.\nInput: "
+            putStr "\nUse W, A, S, D + Enter para andar.\n" 
+            putStr "Use B para jogar a bomba.\n"
+            putStr "Use q + Enter para sair.\n"
+            putStr "\nInput:"
 
             core faseAtual newPos finalEnemyPos newMapBomb (Just (BombData (bomb_x, bomb_y) bombTimer)) 
 
@@ -111,7 +120,10 @@ core faseAtual playerPos enemyPos current_map bomb = do
 
             _ <- drawInMap (0, 11) ' ' Empty newMapBomb
 
-            putStr "Colisão detectada! Use W, A, S, D + Enter.\nInput: "
+            putStr "\nColisão detectada! Use W, A, S, D + Enter para andar.\n" 
+            putStr "Use B para jogar a bomba.\n"
+            putStr "Use q + Enter para sair.\n"
+            putStr "\nInput:"
             core faseAtual playerPos enemyPos newMapBomb (Just (BombData (bomb_x, bomb_y) bombTimer))
 
 findNextStep :: Coord -> Coord -> GameMap -> Coord
