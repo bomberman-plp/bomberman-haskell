@@ -159,6 +159,6 @@ pass (ex, ey) (px, py) m =
        then tryX 
        else if dy /= 0 && getTile tryY m == Empty 
        then tryY 
-       else if not (null emptyNeighbors)
-       then head emptyNeighbors
-       else (ex, ey)
+       else case emptyNeighbors of
+                (primeiro:_) -> primeiro   -- Pega o primeiro elemento de forma segura
+                []           -> (ex, ey)
