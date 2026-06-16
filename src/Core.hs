@@ -20,18 +20,23 @@ import Util.Elimination (checkElimination)
 
 core :: Int -> Coord -> Coord -> GameMap -> Maybe BombData -> IO ()
 core faseAtual playerPos enemyPos current_map bomb = do
+    
+    hSetBuffering stdin NoBuffering
+    hSetEcho stdin False
 
-    command <- getLine 
+    command <- getChar  
 
     let ((bomb_x, bomb_y), bombTimer) = case bomb of
             Just (BombData pos timer) -> (pos, timer - 1) 
             Nothing -> ((-1, -1), -1) 
     _ <- checkElimination playerPos (bomb_x, bomb_y) bombTimer
 
-    if command == "q" 
+    if command == 'q' 
     then do
+        hSetBuffering stdin LineBuffering
+        hSetEcho stdin True
         cleanTerminal
-    else if command == "b" && bombTimer < 0 
+    else if command == 'b' && bombTimer < 0 
     then do
         let ((bomb_x, bomb_y), bombTimer) = (playerPos, 3) 
 
@@ -48,10 +53,10 @@ core faseAtual playerPos enemyPos current_map bomb = do
     else do
         let (x,y) = playerPos
         let newPos = case command of
-                    "w" -> (x, y - 1) 
-                    "s" -> (x, y + 1) 
-                    "a" -> (x - 1, y) 
-                    "d" -> (x + 1, y) 
+                    'w' -> (x, y - 1) 
+                    's' -> (x, y + 1) 
+                    'a' -> (x - 1, y) 
+                    'd' -> (x + 1, y) 
                     _ -> playerPos 
 
         let destinationTile = getTile newPos current_map 
@@ -63,6 +68,8 @@ core faseAtual playerPos enemyPos current_map bomb = do
             let proximaFase = faseAtual + 1
             if proximaFase > 5 
                 then do 
+                    hSetBuffering stdin LineBuffering
+                    hSetEcho stdin True
                     cleanTerminal                    
                     telaVitoria <- readFile "assets/vitoria.txt"  
                     putStrLn telaVitoria                 

@@ -3,4 +3,4 @@ Repositório que contém o projeto da disciplina de PLP
 
 # Como executar
 
-`runhaskell -isrc Main.hs`
+`ghc --make -isrc Main.hs -o jogo && ./jogo`
