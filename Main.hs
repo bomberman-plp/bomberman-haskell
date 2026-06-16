@@ -37,8 +37,11 @@ main = do
     drawMap estadoInicial
 
     _ <- drawInMap initialPosition '☻' Player estadoInicial
-    _ <- drawInMap initialEnemyPosition 'E' Enemy estadoInicial
+    _ <- drawInMap initialEnemyPosition '⚉' Enemy estadoInicial
 
     _ <- drawInMap (0, 11) ' ' Empty estadoInicial
-    putStr "Use W, A, S, D + Enter para andar. 'q' + Enter para sair.\nInput: "
+    putStr "\nUse W, A, S, D + Enter para andar.\n" 
+    putStr "Use B para jogar a bomba.\n"
+    putStr "Use q + Enter para sair.\n"
+    putStr "\nInput:"
     core 1 initialPosition initialEnemyPosition estadoInicial Nothing
