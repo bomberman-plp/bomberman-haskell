@@ -12,6 +12,12 @@ import qualified Data.Set as Set
 import Control.Concurrent                                      
 import Util.Elimination (checkElimination)
 
+{-
+    Autor: João Targino
+    Descrição: loop principal do jogo, no qual os comandos do usuario sao lidos e convertidos em ações no mapa. Por enquanto, apenas a movimentação esta implementada. Recebe a posicao inicial e o mapa
+-}
+
+
 core :: Int -> Coord -> Coord -> GameMap -> Maybe BombData -> IO ()
 core faseAtual playerPos enemyPos current_map bomb = do
     
