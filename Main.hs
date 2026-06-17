@@ -11,6 +11,8 @@ import Util.CleanTerminal
 import Core
 import System.IO
 import Home_Screen
+import Config (escolherFase)
+import GHC.Show (Show(show))
 
 main :: IO ()
 main = do
@@ -25,8 +27,11 @@ main = do
     
     hFlush stdout
     threadDelay 2000000  -- 2 segundos
+    
+    faseEscolhida <- escolherFase
+    let arquivo = "assets/level" ++ show faseEscolhida ++ ".txt"
 
-    (mapaEstatico, initialPosition) <- loadStaticMap "assets/level1.txt"
+    (mapaEstatico, initialPosition) <- loadStaticMap arquivo 
 
     let initialEnemyPosition = (1, 9)
 
@@ -44,4 +49,4 @@ main = do
     putStr "Use B para jogar a bomba.\n"
     putStr "Use q + Enter para sair.\n"
     putStr "\nInput:"
-    core 1 initialPosition initialEnemyPosition estadoInicial Nothing
+    core faseEscolhida initialPosition initialEnemyPosition estadoInicial Nothing
