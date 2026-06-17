@@ -5,12 +5,6 @@ module Util.DrawMap
 import qualified Data.Map as M
 import Map (Tile(..), GameMap, getTile)
 
-{-
-    Autor: João Targino
-
-    Descrição: fornecer as funções necessárias para transformar o mapa gerado no arquivo Map.hs em algo mais visual.
--}
-
 -- aqui, fiz o mapeamento de cada elemento da estrutura para um caracter. dessa forma acredito que ficou bom.
 tupleToChar :: Tile -> Char
 tupleToChar Indestructible = '█'

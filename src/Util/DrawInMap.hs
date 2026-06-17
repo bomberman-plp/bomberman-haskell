@@ -3,11 +3,6 @@ module Util.DrawInMap where
 import qualified Data.Map as M
 import Map
 
-{-
-    Autor: João Targino
-
-    Descrição: dada a coordenada, o caractere e  o tipo de bloco, desenha no mapa e atualiza a matriz.
--}
 
 drawInMap :: Coord -> Char -> Tile -> GameMap -> IO GameMap
 drawInMap (x,y) c tile gameMap = do
