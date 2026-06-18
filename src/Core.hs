@@ -17,49 +17,45 @@ import Util.Elimination (checkElimination)
 core :: Int -> Coord -> Coord -> GameMap -> Maybe BombData -> IO ()
 core faseAtual playerPos enemyPos current_map bomb = do
     
+    cleanTerminal
+    drawMap current_map
+    
+    let ((bomb_x, bomb_y), currentBombTimer) = case bomb of
+            Just (BombData pos timer) -> (pos, timer) 
+            Nothing -> ((-1, -1), -1) 
+            
+    _ <- checkElimination playerPos (bomb_x, bomb_y) currentBombTimer
+
+    putStr "\nUse W, A, S, D para andar." 
+    putStr "\nUse B para jogar bomba ou Espaço para esperar."
+    putStr "\nUse Q para sair."
+    putStr "\nInput: "
+    
     hSetBuffering stdin NoBuffering
     hSetEcho stdin False
 
     command <- getChar  
 
-    let ((bomb_x, bomb_y), bombTimer) = case bomb of
-            Just (BombData pos timer) -> (pos, timer - 1) 
-            Nothing -> ((-1, -1), -1) 
-    _ <- checkElimination playerPos (bomb_x, bomb_y) bombTimer
+    let bombTimer = currentBombTimer - 1
 
     if command == 'q' 
     then do
         hSetBuffering stdin LineBuffering
         hSetEcho stdin True
-        cleanTerminal
-    else if command == 'b' && bombTimer < 0 
-    then do
-        let ((bomb_x, bomb_y), bombTimer) = (playerPos, 3) 
-
-        newMapBomb <- handleBomb playerPos current_map (Just (BombData (bomb_x, bomb_y) bombTimer)) 
-
-        _ <- drawInMap (0,11) ' ' Empty newMapBomb 
-
-        putStr "\nUse W, A, S, D + Enter para andar.\n" 
-        putStr "Use B para jogar a bomba.\n"
-        putStr "Use q + Enter para sair.\n"
-        putStr "\nInput:"
-
-        core faseAtual playerPos enemyPos newMapBomb (Just (BombData (bomb_x, bomb_y) bombTimer)) 
+        clearTerminalScrollback
     else do
+        let hasActiveBomb = bombTimer >= -1
+        
         let (x,y) = playerPos
-        let newPos = case command of
+        let intentPos = case command of
                     'w' -> (x, y - 1) 
                     's' -> (x, y + 1) 
                     'a' -> (x - 1, y) 
                     'd' -> (x + 1, y) 
-                    _ -> playerPos 
+                    _   -> playerPos 
 
-        let destinationTile = getTile newPos current_map 
-
-        -------------------------------------------------------------------------
-        -- INTERCEPTAÇÃO: SCRIPT DE VITÓRIA
-        -------------------------------------------------------------------------
+        let destinationTile = getTile intentPos current_map 
+        
         if destinationTile == Victory 
         then do
             let proximaFase = faseAtual + 1
@@ -92,48 +88,56 @@ core faseAtual playerPos enemyPos current_map bomb = do
                 putStr "\nInput:"
                 core proximaFase posInicial initialEnemyPosition estadoNovo Nothing
 
-        else if destinationTile == Empty 
-        then do
-
-            let oldMap = M.insert playerPos Empty current_map
-            let newMap = M.insert newPos Player oldMap
-
-            _ <- drawInMap playerPos ' ' Empty newMap 
-            _ <- drawInMap newPos '☻' Player newMap 
-
-            let nextEnemyPos = findNextStep enemyPos newPos newMap
+        else do
+            let isBombAction = (command == 'b') && not hasActiveBomb
+            let isWaitAction = (command == ' ')
+            let playerMoved = (destinationTile == Empty) && (intentPos /= playerPos)
             
-            let finalEnemyPos = if nextEnemyPos == newPos 
-                                then pass enemyPos newPos newMap 
-                                else nextEnemyPos
-                                
-            let mapSemInimigoVelho = M.insert enemyPos Empty newMap
-            let newMapComInimigo = M.insert finalEnemyPos Enemy mapSemInimigoVelho
-            
-            _ <- drawInMap enemyPos ' ' Empty newMapComInimigo
-            _ <- drawInMap finalEnemyPos '⚉' Enemy newMapComInimigo
+            if not playerMoved && not isBombAction && not isWaitAction
+            then core faseAtual playerPos enemyPos current_map bomb
+            else do
+                let newPlayerPos = if playerMoved then intentPos else playerPos
+                
+                let mapAfterPlayer = if playerMoved 
+                                     then M.insert newPlayerPos Player (M.insert playerPos Empty current_map)
+                                     else current_map
+                
+                let nextEnemyPos = if hasActiveBomb 
+                                   then getSafeStep enemyPos (bomb_x, bomb_y) mapAfterPlayer
+                                   else findNextStep enemyPos newPlayerPos mapAfterPlayer
+                                   
+                let finalEnemyPos = if nextEnemyPos == newPlayerPos 
+                                    then pass enemyPos newPlayerPos mapAfterPlayer 
+                                    else nextEnemyPos
 
-            newMapBomb <- handleBomb newPos newMapComInimigo (Just (BombData (bomb_x, bomb_y) bombTimer))
+                let mapSemInimigoVelho = M.insert enemyPos Empty mapAfterPlayer
+                let newMapComInimigo = M.insert finalEnemyPos Enemy mapSemInimigoVelho
+                
+                let (ex, ey) = finalEnemyPos
+                let (px, py) = newPlayerPos
+                let distToPlayer = abs (ex - px) + abs (ey - py)
+                
+                let enemyDropsBomb = (distToPlayer <= 2) && not hasActiveBomb && not isBombAction
 
-            _ <- drawInMap (0,11) ' ' Empty newMapBomb 
+                let finalBombData = if isBombAction
+                                    then Just (BombData newPlayerPos 3)
+                                    else if enemyDropsBomb 
+                                         then Just (BombData (ex, ey) 3) 
+                                         else if hasActiveBomb
+                                              then Just (BombData (bomb_x, bomb_y) bombTimer)
+                                              else Nothing
 
-            putStr "\nUse W, A, S, D + Enter para andar.\n" 
-            putStr "Use B para jogar a bomba.\n"
-            putStr "Use q + Enter para sair.\n"
-            putStr "\nInput:"
+                newMapBomb <- handleBomb newPlayerPos newMapComInimigo finalBombData
 
-            core faseAtual newPos finalEnemyPos newMapBomb (Just (BombData (bomb_x, bomb_y) bombTimer)) 
+                core faseAtual newPlayerPos finalEnemyPos newMapBomb finalBombData 
 
-        else do 
-            newMapBomb <- handleBomb (bomb_x, bomb_y) current_map (Just (BombData (bomb_x, bomb_y) bombTimer)) 
-
-            _ <- drawInMap (0,11) ' ' Empty newMapBomb
-
-            putStr "\nColisão detectada! Use W, A, S, D + Enter para andar.\n" 
-            putStr "Use B para jogar a bomba.\n"
-            putStr "Use q + Enter para sair.\n"
-            putStr "\nInput:"
-            core faseAtual playerPos enemyPos newMapBomb (Just (BombData (bomb_x, bomb_y) bombTimer))
+getSafeStep :: Coord -> Coord -> GameMap -> Coord
+getSafeStep (ex, ey) (bx, by) mapState =
+    let neighbors = [(ex, ey - 1), (ex, ey + 1), (ex - 1, ey), (ex + 1, ey)]
+        valid = filter (\pos -> getTile pos mapState == Empty) neighbors
+        dist (x, y) = abs (x - bx) + abs (y - by)
+        best = foldl (\bestPos currPos -> if dist currPos > dist bestPos then currPos else bestPos) (ex, ey) valid
+    in best
 
 findNextStep :: Coord -> Coord -> GameMap -> Coord
 findNextStep start target gameMap = 
@@ -155,7 +159,6 @@ findNextStep start target gameMap =
                 newQueue = queue ++ map (\n -> (n, n:path)) unvisited
             in bfs newQueue newVisited
 
-            
 pass :: Coord -> Coord -> GameMap -> Coord
 pass (ex, ey) (px, py) m =
     let dx = signum (ex - px)
@@ -169,5 +172,5 @@ pass (ex, ey) (px, py) m =
        else if dy /= 0 && getTile tryY m == Empty 
        then tryY 
        else case emptyNeighbors of
-                (primeiro:_) -> primeiro   -- Pega o primeiro elemento de forma segura
+                (primeiro:_) -> primeiro   
                 []           -> (ex, ey)
