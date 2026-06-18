@@ -5,8 +5,6 @@ import Util.DrawInMap
 
 data BombData = BombData { position :: Coord, timer :: Int }
 
-{--}
-
 handleBomb :: Coord -> GameMap -> Maybe BombData -> IO GameMap
 handleBomb playerPos current_map (Just (BombData (bomb_x, bomb_y) bombTimer)) = do
     if bombTimer > 0 then

@@ -7,12 +7,6 @@ module Util.CleanTerminal
 import System.Process (callCommand)
 import System.Info (os)
 
-{-
-    Autor: João Targino
-
-    Descrição: limpa o terminal. simples assim_
-
--}
 
 cleanTerminal :: IO ()
 cleanTerminal = putStr "\x1b[2J\x1b[H"

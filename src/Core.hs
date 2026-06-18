@@ -12,10 +12,6 @@ import qualified Data.Set as Set
 import Control.Concurrent                                      
 import Util.Elimination (checkElimination)
 
-{-
-    Autor: João Targino
-    Descrição: loop principal do jogo, no qual os comandos do usuario sao lidos e convertidos em ações no mapa. Por enquanto, apenas a movimentação esta implementada. Recebe a posicao inicial e o mapa
--}
 
 
 core :: Int -> Coord -> Coord -> GameMap -> Maybe BombData -> IO ()
@@ -67,18 +63,29 @@ core faseAtual playerPos enemyPos current_map bomb = do
                 then do 
                     hSetBuffering stdin LineBuffering
                     hSetEcho stdin True
-                    clearTerminalScrollback                    
+
+                    cleanTerminal                    
                     telaVitoria <- readFile "assets/vitoria.txt"  
                     putStrLn telaVitoria                 
                     Control.Concurrent.threadDelay 5000000 
-                    clearTerminalScrollback
-                    return ()
+
+                    cleanTerminal
+                    return()
             else do 
                 let arquivo =  "assets/level" ++ show proximaFase ++ ".txt"
                 (novoMapa, posInicial) <- loadStaticMap arquivo
+
                 let initialEnemyPosition = (1, 9)
                 let mapaComPlayer = M.insert posInicial Player novoMapa
                 let estadoNovo = M.insert initialEnemyPosition Enemy mapaComPlayer
+                
+                cleanTerminal
+                drawMap estadoNovo
+
+                putStr "\nUse W, A, S, D + Enter para andar.\n" 
+                putStr "Use B para jogar a bomba.\n"
+                putStr "Use q + Enter para sair.\n"
+                putStr "\nInput:"
                 core proximaFase posInicial initialEnemyPosition estadoNovo Nothing
 
         else do
