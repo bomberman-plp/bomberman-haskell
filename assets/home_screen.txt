@@ -17,7 +17,7 @@
  Equipe de Desenvolvedores | Bomberman-PLP
 
  - Gustavo Franco
- - Nicolas Rodrigues
+ - Nicolas Brandão
  - João Emanuel Targino
  - Samuel Brandão
  - Lucas Ricardo
